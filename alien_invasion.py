@@ -1,5 +1,7 @@
 import sys
 from time import sleep
+from pathlib import Path
+import json
 
 import pygame
 
@@ -44,6 +46,14 @@ class AlienInvasion :
         self.play_button = Button(self, "Play")
         self.start_game = False
 
+        # Initialize the path to store high score.
+        self.path = Path('high_score.json')
+
+    def _load_high_score(self) :
+        '''Rewrites the high score in the JSON file.'''
+        temp = json.dumps(self.stats.high_score)
+        self.path.write_text(temp)
+
     def _ship_hit(self) :
         '''Respond to the ship being hit by an alien.'''
         # Decrement ships_left, and update scoreboard.
@@ -62,6 +72,7 @@ class AlienInvasion :
         sleep(0.5)
         
         if self.stats.ships_left == 0 :
+            self._load_high_score()
             self.game_active = False
             pygame.mouse.set_visible(True)
 
